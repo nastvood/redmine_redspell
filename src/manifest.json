@@ -18,7 +18,8 @@
   },
   "permissions": [
     "*://*/*",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "manifest_version": 2
 }

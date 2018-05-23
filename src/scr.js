@@ -1,13 +1,5 @@
 var bkg = chrome.extension.getBackgroundPage();
-var url = "http://redmine.redspell.ru/my/page";
 var rootUrl = "http://redmine.redspell.ru/";
-var req;
-
-function handleStateChange() {
-}
-
-function handleError() {
-}
 
 function alinkInit() {
   var links = document.getElementsByTagName("a");
@@ -22,50 +14,61 @@ function alinkInit() {
   }
 };
 
-function handleResponse() {
-  var html = new DOMParser().parseFromString(req.responseText, "text/html");
+function rest(path, key, args, handler) {
+  var url = "http://redmine.redspell.ru/" + path + "?key=" + key + args; 
+	bkg.console.log(url);
 
-  var loginForm = html.getElementById('login-form');
-  if (loginForm) {
-    
-    var div = document.createElement('div');
-    div.className = "div_auth";
-    div.innerHTML = '<a href="' + rootUrl + '">RedSpell HQ</a>';
-    document.getElementsByTagName('body')[0].appendChild(div);
+	var errHandler = function(e) {
+		if (e.message == 401) {
+			//alert("Не верный Key API");
+		} else {
+			throw e;
+		}
+	};
 
-    alinkInit();
+	fetch(url)
+		.then(function(resp){
+			if (resp.status === 401) {
+				throw Error(401);
+			} else {
+				return resp.json();
+			}
+		})
+		.then(handler).catch(errHandler);
+}
 
-  } else {
+function restIssues(apiKey, id) {
+	rest("issues.json", apiKey, "&assigned_to_id=" + id + "&limit=100&sort=updated_on:desc", function restHandleResponse(resp) {
 
-    var myPage = html.getElementById('my-page');
-    var elems = myPage.getElementsByTagName("tr");
-  
     var table = document.createElement('table');
     table.id = 'tickets';
-  
-    for (i in elems) {
-      var el = elems[i];
-  
-      if (el.id && el.id.startsWith("issue-")) {
-        var row = table.insertRow()
-        row.className = i % 2 == 0 ? "even" : "odd";
-  
-        var id = el.getElementsByClassName("id")[0].firstElementChild;
-        id.setAttribute('href', rootUrl + id.getAttribute("href"));
-        row.insertCell(0).innerHTML = el.getElementsByClassName("id")[0].innerHTML;
-  
-        var project = el.getElementsByClassName("project")[0].firstElementChild;
-        project.setAttribute('href', rootUrl + project.getAttribute("href"));
-        row.insertCell(1).innerHTML = el.getElementsByClassName("project")[0].innerHTML;
-        
-        row.insertCell(2).innerHTML = el.getElementsByClassName("status")[0].innerHTML;
-        
-        var subject = el.getElementsByClassName("subject")[0].firstElementChild;
-        subject.setAttribute('href', rootUrl + subject.getAttribute("href"));
-        row.insertCell(3).innerHTML = el.getElementsByClassName("subject")[0].innerHTML;
-      }      
+    
+    for (i in resp.issues) {
+      var issue = resp.issues[i];
+
+      var row = table.insertRow()
+      row.className = i % 2 == 0 ? "even" : "odd";
+
+      var id = document.createElement('a');
+      id.setAttribute('href', rootUrl + "issues/" + issue.id);
+	  	id.innerText = issue.id;			
+      row.insertCell(0).appendChild(id);  
+    
+      var project = document.createElement('a');
+      project.setAttribute('href', rootUrl + "projects/" + issue.project.id);
+	  	project.innerText = issue.project.name;			
+      row.insertCell(1).appendChild(project);  
+
+      row.insertCell(2).innerHTML = issue.status.name;
+
+      var subject = document.createElement('a');
+      subject.setAttribute('href', rootUrl + "issues/" + issue.id);
+	  	var title = "Автор: " + issue.author.name + "\n" + issue.description
+	  	subject.setAttribute('title', title);
+	  	subject.innerText = issue.subject;			
+      row.insertCell(3).appendChild(subject);    
     }
-  
+    
     var header = table.createTHead();
     var row = header.insertRow(0);  
     row.insertCell(0).innerText = "#";  
@@ -73,26 +76,46 @@ function handleResponse() {
     row.insertCell(2).innerText = "Статус";  
     row.insertCell(3).innerText = "Тема";  
 
-    document.getElementsByTagName('body')[0].appendChild(table);
-  
+    document.getElementById('div_tickets').appendChild(table);
+    
     alinkInit();
-  }
+	})
 }
 
-function main() {
-  //bkg.console.log("main");
+function restCurrentUser(apiKey) {
+	rest("users/current.json", apiKey, "", function restHandleResponse(resp) {
+		
+		var user = resp.user;
 
-  req = new XMLHttpRequest();
-  req.onload = handleResponse;
-  req.onerror = handleError;
-  req.onreadystatechange = handleStateChange;
-  req.open("GET", "http://redmine.redspell.ru/my/page", true);
-  req.send(null);
+    chrome.storage.sync.set({ 
+    	apiKey : apiKey,
+			id     : user.id,
+			login  : user.login
+	  }, function(){
+		});
+
+		restIssues(apiKey, user.id);
+
+	})
+}
+
+function load() {
+  chrome.storage.sync.get(function(keys){ 
+		document.getElementById("inp_api_key").value = keys.apiKey;
+		restIssues(keys.apiKey, keys.id);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  main();
+  load();
 
-  document.getElementById('clickme').addEventListener('click', function() {  
+  document.getElementById('btn_save_settings').addEventListener('click', function() {  
+    var apiKey = document.getElementById("inp_api_key").value;
+    chrome.storage.sync.set({ 
+      apiKey : apiKey
+    }, function(){      
+      restCurrentUser(apiKey);  
+    });
   });
+
 });
