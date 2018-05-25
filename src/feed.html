@@ -7,6 +7,7 @@
     line-height: 1.5em;
     margin: 0px;
     border-radius: 10px;
+    min-width: 550px;
   }
 
   table {
@@ -54,13 +55,79 @@
     background-color: #ffffdd;
   }
 
-  .div_auth { 
-    padding: 20px;
-    margin: 0px 30px;
-    width: 150px;
-    text-align: center;    
+  #tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
   }
-      
+
+  #tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: 0.3s;
+  }
+
+  #tab button:hover {
+    background-color: #ddd;
+  }
+
+  #tab button.active {
+    background-color: #ccc;
+  }
+
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+
+  #issues {
+    padding: 0px;
+  }
+
+  #settings {
+    display: table;
+  }
+
+  #settings p { 
+    display: table-row;  
+  }
+
+  #settings label { 
+    display: table-cell; 
+    padding-right: 10px; 
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  #settings input { 
+    display: table-cell; 
+    margin-bottom: 10px;
+    width: 420px;
+  }
+
+  .button {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    transition: 0.3s;
+    cursor: pointer;
+    padding: 5px 5px;
+  }
+
+  .button:hover {
+    background-color: #ddd;
+  }
+
+  .button:active {
+    background-color: #eee;
+  }
+
 </style>
 <html>
   <meta charset="utf-8">
@@ -68,14 +135,29 @@
     <script src="scr.js"></script>
   </head>
   <body>
-    <div id="div_config">
-      <!--<button id="btn_tickets">Тикеты</button>      -->
-      <label for="inp_api_key">API Key</label>
-      <input id="inp_api_key" type="text" size="38" />
-      <button id="btn_save_settings">Сохранить</button>      
+    <div id="tab">
+      <button class="tablinks" id="btn_settings">Настройки</button>
+      <button class="tablinks" id="btn_issues">Задачи</button>
+    </div>
+
+    <div id="settings" class="tabcontent" >
+      <p>
+        <label for="inp_url">Redmine URL: </label>
+        <input id="inp_url" type="text" />
+      </p>        
+      <p>
+        <label for="inp_api_key">API Key: </label>
+        <input id="inp_api_key" type="text" />
+      </p>        
+      <p>
+        <div style="text-align:right;margin-right:10px">
+          <button id="btn_save_settings" class="button">Сохранить</button>      
+        </div>
+      </p>        
     </div>      
-    <!--<button id="btn_config">Настройки</button>-->
-    <div id="div_tickets">
+
+    <div id="issues" class="tabcontent" >
     </div>  
+
   </body>  
 </html>  

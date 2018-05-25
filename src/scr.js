@@ -1,5 +1,4 @@
 var bkg = chrome.extension.getBackgroundPage();
-var rootUrl = "http://redmine.redspell.ru/";
 
 function alinkInit() {
   var links = document.getElementsByTagName("a");
@@ -14,9 +13,9 @@ function alinkInit() {
   }
 };
 
-function rest(path, key, args, handler) {
-  var url = "http://redmine.redspell.ru/" + path + "?key=" + key + args; 
-	bkg.console.log(url);
+function rest(rootUrl, path, key, args, handler) {
+  var url = rootUrl + path + "?key=" + key + args; 
+	//bkg.console.log(url);
 
 	var errHandler = function(e) {
 		if (e.message == 401) {
@@ -37,8 +36,8 @@ function rest(path, key, args, handler) {
 		.then(handler).catch(errHandler);
 }
 
-function restIssues(apiKey, id) {
-	rest("issues.json", apiKey, "&assigned_to_id=" + id + "&limit=100&sort=updated_on:desc", function restHandleResponse(resp) {
+function restIssues(rootUrl, apiKey, id) {
+	rest(rootUrl, "issues.json", apiKey, "&assigned_to_id=" + id + "&limit=100&sort=updated_on:desc", function restHandleResponse(resp) {
 
     var table = document.createElement('table');
     table.id = 'tickets';
@@ -76,45 +75,81 @@ function restIssues(apiKey, id) {
     row.insertCell(2).innerText = "Статус";  
     row.insertCell(3).innerText = "Тема";  
 
-    document.getElementById('div_tickets').appendChild(table);
+    document.getElementById('issues').appendChild(table);
     
     alinkInit();
 	})
 }
 
-function restCurrentUser(apiKey) {
-	rest("users/current.json", apiKey, "", function restHandleResponse(resp) {
-		
+function restCurrentUser(url, apiKey) {
+	rest(url, "users/current.json", apiKey, "", function restHandleResponse(resp) {		
 		var user = resp.user;
 
     chrome.storage.sync.set({ 
     	apiKey : apiKey,
 			id     : user.id,
-			login  : user.login
-	  }, function(){
+			login  : user.login,
+      url    : url
 		});
 
-		restIssues(apiKey, user.id);
-
+		restIssues(url, apiKey, user.id);
 	})
 }
 
 function load() {
+	document.getElementById("inp_api_key").value = "";
+  document.getElementById("inp_url").value = "";
+
   chrome.storage.sync.get(function(keys){ 
-		document.getElementById("inp_api_key").value = keys.apiKey;
-		restIssues(keys.apiKey, keys.id);
+    if (keys.apiKey)  {
+  		document.getElementById("inp_api_key").value = keys.apiKey;
+    }
+
+    if (keys.url)  {
+  		document.getElementById("inp_url").value = keys.url;
+    }
+
+    if (keys.apiKey && keys.url)  {	  	
+      restIssues(keys.url, keys.apiKey, keys.id);
+
+      document.getElementById("btn_issues").click();
+    } else {
+      document.getElementById("btn_settings").click();
+    }
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  load();
+function openTab(e) {
+  var tabContent = document.getElementsByClassName("tabcontent");
+  for (var i = 0; i < tabContent.length; i++) {
+    tabContent[i].style.display = "none";
+  }
 
-  document.getElementById('btn_save_settings').addEventListener('click', function() {  
+   var tabLinks = document.getElementsByClassName("tablinks");
+   for (i = 0; i < tabLinks.length; i++) {
+     tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+   }
+
+  var curTab = (e.currentTarget.id === "btn_settings") ? "settings" : "issues";
+  document.getElementById(curTab).style.display = "block";
+  e.currentTarget.className += " active";
+}
+
+document.addEventListener('DOMContentLoaded', function() {  
+  document.getElementById("btn_settings").addEventListener("click", openTab);  
+  document.getElementById("btn_issues").addEventListener("click", openTab);  
+
+  load();  
+
+  document.getElementById("btn_save_settings").addEventListener("click", function() {  
     var apiKey = document.getElementById("inp_api_key").value;
+    var url = document.getElementById("inp_url").value;
+
     chrome.storage.sync.set({ 
-      apiKey : apiKey
+      apiKey : apiKey,
+      url    : url
     }, function(){      
-      restCurrentUser(apiKey);  
+      restCurrentUser(url, apiKey);  
     });
   });
 
