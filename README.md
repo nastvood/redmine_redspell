@@ -1,2 +1,1 @@
-http://redmine.redspell.ru/
-
+Redmine issues viewer
