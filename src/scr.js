@@ -37,7 +37,16 @@ function rest(rootUrl, path, key, args, handler) {
 }
 
 function restIssues(rootUrl, apiKey, id) {
+  var redmineUrl = document.getElementById("redmine_url");
+  while (redmineUrl.firstChild) {
+    redmineUrl.removeChild(redmineUrl.firstChild);
+  }
+
 	rest(rootUrl, "issues.json", apiKey, "&assigned_to_id=" + id + "&limit=100&sort=updated_on:desc", function restHandleResponse(resp) {
+    var aUrl = document.createElement("a");
+    aUrl.setAttribute('href', rootUrl);
+  	aUrl.innerText = rootUrl;			
+    redmineUrl.appendChild(aUrl);
 
     var table = document.createElement('table');
     table.id = 'tickets';
@@ -78,7 +87,9 @@ function restIssues(rootUrl, apiKey, id) {
     document.getElementById('issues').appendChild(table);
     
     alinkInit();
+
 	})
+  
 }
 
 function restCurrentUser(url, apiKey) {
