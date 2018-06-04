@@ -14,7 +14,7 @@ function alinkInit() {
 };
 
 function rest(rootUrl, path, key, args, handler) {
-  var url = rootUrl + path + "?key=" + key + args; 
+  var url = rootUrl + '/' + path + "?key=" + key + args; 
 	//bkg.console.log(url);
 
 	var errHandler = function(e) {
@@ -58,19 +58,19 @@ function restIssues(rootUrl, apiKey, id) {
       row.className = i % 2 == 0 ? "even" : "odd";
 
       var id = document.createElement('a');
-      id.setAttribute('href', rootUrl + "issues/" + issue.id);
+      id.setAttribute('href', rootUrl + "/issues/" + issue.id);
 	  	id.innerText = issue.id;			
       row.insertCell(0).appendChild(id);  
     
       var project = document.createElement('a');
-      project.setAttribute('href', rootUrl + "projects/" + issue.project.id);
+      project.setAttribute('href', rootUrl + "/projects/" + issue.project.id);
 	  	project.innerText = issue.project.name;			
       row.insertCell(1).appendChild(project);  
 
       row.insertCell(2).innerHTML = issue.status.name;
 
       var subject = document.createElement('a');
-      subject.setAttribute('href', rootUrl + "issues/" + issue.id);
+      subject.setAttribute('href', rootUrl + "/issues/" + issue.id);
 	  	var title = "Автор: " + issue.author.name + "\n" + issue.description
 	  	subject.setAttribute('title', title);
 	  	subject.innerText = issue.subject;			
