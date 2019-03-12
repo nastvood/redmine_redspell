@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<style>
+  body {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    color: #505050;
+    line-height: 1.5em;
+    margin: 0px;
+    border-radius: 10px;
+    min-width: 550px;
+  }
+
+  table {
+    display: table;
+    border-spacing: 2px;
+    border-color: grey;
+    border: 1px solid #e4e4e4;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  thead {
+    text-align: -internal-center;
+    background-color: #EEEEEE;
+    padding: 4px;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  td {
+    display: table-cell;
+    vertical-align: middle;
+    border-spacing: 2px;
+    padding: 2px 3px;
+  }
+
+  tr {
+    white-space: nowrap;
+  }
+
+  a {
+    color: #169;
+    text-decoration: none;
+  }
+
+  .odd {
+    background-color: #f6f7f8;
+  }
+
+  .even {
+    background-color: #fff;
+  }
+
+  tbody tr:hover {
+    background-color: #ffffdd;
+  }
+
+  #tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+  }
+
+  #tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: 0.3s;
+  }
+
+  #tab button:hover {
+    background-color: #ddd;
+  }
+
+  #tab button.active {
+    background-color: #ccc;
+  }
+
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+
+  #issues {
+    padding: 0px;
+  }
+
+  #settings {
+    display: table;
+  }
+
+  #settings p { 
+    display: table-row;  
+  }
+
+  #settings label { 
+    display: table-cell; 
+    padding-right: 10px; 
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  #settings input { 
+    display: table-cell; 
+    margin-bottom: 10px;
+    width: 420px;
+  }
+
+  .button {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    transition: 0.3s;
+    cursor: pointer;
+    padding: 5px 5px;
+  }
+
+  .button:hover {
+    background-color: #ddd;
+  }
+
+  .button:active {
+    background-color: #eee;
+  }
+
+  #redmine_url {
+    float: right;
+    border: none;
+    outline: none;
+    padding: 3px 10px;
+  }
+
+</style>
+<html>
+  <meta charset="utf-8">
+  <head>
+    <script src="src.js"></script>
+  </head>
+  <body>
+    <div id="tab">
+      <button class="tablinks" id="btn_settings">Настройки</button>
+      <button class="tablinks" id="btn_issues">Задачи</button>
+      <div id="redmine_url"></div>        
+    </div>
+
+    <div id="settings" class="tabcontent" >
+      <p>
+        <label for="inp_url">Redmine URL: </label>
+        <input id="inp_url" type="text" />
+      </p>        
+      <p>
+        <label for="inp_api_key">API Key: </label>
+        <input type="password" id="inp_api_key" type="text" />
+      </p>        
+      <p>
+        <div style="text-align:right;margin-right:10px">
+          <button id="btn_save_settings" class="button">Сохранить</button>      
+        </div>
+      </p>        
+    </div>      
+
+    <div id="issues" class="tabcontent" >
+    </div>  
+
+  </body>  
+</html>  

@@ -1,0 +1,28 @@
+{
+  "name": "Redspissues",
+  "description": "Redmine issues",
+  "version": "0.2",
+  "icons": {
+    "128": "assets/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "assets/icon19.png",
+      "38": "assets/icon38.png"
+    },
+    "default_popup": "feed.html"
+  },
+  "permissions": [
+    "*://*/*",
+    "tabs",
+    "storage"
+  ],
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "nastvood@gmail.com",
+      "strict_min_version": "57.0"
+    }
+  }
+}
+
