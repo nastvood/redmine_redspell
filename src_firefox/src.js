@@ -67,7 +67,7 @@ function restIssues(rootUrl, apiKey, id) {
 	  	project.innerText = issue.project.name;			
       row.insertCell(1).appendChild(project);  
 
-      row.insertCell(2).innerHTML = issue.status.name;
+      row.insertCell(2).innerText = issue.status.name;
 
       var subject = document.createElement('a');
       subject.setAttribute('href', rootUrl + "/issues/" + issue.id);
