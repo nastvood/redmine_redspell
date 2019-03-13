@@ -1,7 +1,7 @@
 {
   "name": "Redspissues",
   "description": "Redmine issues",
-  "version": "0.2",
+  "version": "0.3",
   "icons": {
     "128": "assets/icon128.png"
   },
@@ -20,7 +20,7 @@
   "manifest_version": 2,
   "applications": {
     "gecko": {
-      "id": "nastvood@gmail.com",
+      "id":"{0f354431-cc62-4bdf-8af8-d86b4a96096d}",
       "strict_min_version": "57.0"
     }
   }

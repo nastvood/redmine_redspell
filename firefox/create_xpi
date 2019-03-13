@@ -1,0 +1,8 @@
+#!/bin/bash
+
+archive=redspissues.xpi
+
+cd src
+zip -r ${archive} *
+cd -
+mv ./src/${archive} ./
