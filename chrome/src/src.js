@@ -15,11 +15,9 @@ function alinkInit() {
 
 function rest(rootUrl, path, key, args, handler) {
   var url = rootUrl + '/' + path + "?key=" + key + args; 
-	//bkg.console.log(url);
 
 	var errHandler = function(e) {
 		if (e.message == 401) {
-			//alert("Не верный Key API");
 		} else {
 			throw e;
 		}
@@ -67,7 +65,7 @@ function restIssues(rootUrl, apiKey, id) {
 	  	project.innerText = issue.project.name;			
       row.insertCell(1).appendChild(project);  
 
-      row.insertCell(2).innerHTML = issue.status.name;
+      row.insertCell(2).innerText = issue.status.name;
 
       var subject = document.createElement('a');
       subject.setAttribute('href', rootUrl + "/issues/" + issue.id);

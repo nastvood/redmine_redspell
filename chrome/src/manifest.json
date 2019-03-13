@@ -1,7 +1,7 @@
 {
   "name": "Redspissues",
   "description": "Redmine issues",
-  "version": "0.2",
+  "version": "0.3",
   "icons": {
     "128": "assets/icon128.png"
   },

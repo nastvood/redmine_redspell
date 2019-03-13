@@ -15,11 +15,9 @@ function alinkInit() {
 
 function rest(rootUrl, path, key, args, handler) {
   var url = rootUrl + '/' + path + "?key=" + key + args; 
-	//bkg.console.log(url);
 
 	var errHandler = function(e) {
 		if (e.message == 401) {
-			//alert("Не верный Key API");
 		} else {
 			throw e;
 		}
